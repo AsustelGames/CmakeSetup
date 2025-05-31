@@ -21,7 +21,7 @@ include_directories(Libs/SDL3/include)
 add_subdirectory(Libs/SDL3)
 
 
-# Add SDL3
+# Add Box2D
 include_directories(Libs/Box2D/include)
 add_subdirectory(Libs/Box2D)
 

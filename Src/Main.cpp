@@ -29,10 +29,10 @@ int main()
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("test", NULL);
-        if (ImGui::Button("click", { 100, 100 }))
+        ImGui::Begin("Test", NULL);
+        if (ImGui::Button("Click me", { 100, 100 }))
         {
-            std::cout << "a" << '\n';
+            std::cout << "you've clicked on me!" << '\n';
         }
         ImGui::End();
 
