@@ -11,6 +11,6 @@
       "limits": "cpp",
       "ranges": "cpp",
       "variant": "cpp",
-      "iosfwd": "cpp"
+      "iosfwd": "cp"
    }
 }
