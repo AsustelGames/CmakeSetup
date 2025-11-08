@@ -14,16 +14,17 @@ endif()
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION False)
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build Libraries as static libraries" FORCE)
+set(BUILD_SHARED_LIBS OFF)
+
 
 # Add SDL3
-include_directories(Libs/SDL3/include)
-add_subdirectory(Libs/SDL3)
+include_directories(Libs/SDL/include)
+add_subdirectory(Libs/SDL)
 
 
-# Add Box2D
-include_directories(Libs/Box2D/include)
-add_subdirectory(Libs/Box2D)
+# Add SDL_Image
+include_directories(Libs/SDL_Image/include)
+add_subdirectory(Libs/SDL_Image)
 
 
 # Add SDL_Mixer
@@ -31,8 +32,9 @@ include_directories(Libs/SDL_Mixer/include)
 add_subdirectory(Libs/SDL_Mixer)
 
 
-# Add STB_Image
-include_directories(Libs/STB_Image)
+# Add Box2D
+include_directories(Libs/Box2D/include)
+add_subdirectory(Libs/Box2D)
 
 
 # Add FastNoiseLite
@@ -45,11 +47,11 @@ include_directories(Libs/Imgui/backends)
 
 
 set(Imgui_SOURCES
-    Libs/Imgui/imgui.cpp
-    Libs/Imgui/imgui_draw.cpp
-    Libs/Imgui/imgui_widgets.cpp
-    Libs/Imgui/imgui_tables.cpp
-    Libs/Imgui/imgui_demo.cpp
+   Libs/Imgui/imgui.cpp
+   Libs/Imgui/imgui_draw.cpp
+   Libs/Imgui/imgui_widgets.cpp
+   Libs/Imgui/imgui_tables.cpp
+   Libs/Imgui/imgui_demo.cpp
 	Libs/Imgui/backends/imgui_impl_sdl3.cpp
 	Libs/Imgui/backends/imgui_impl_sdlrenderer3.cpp
 )
@@ -62,13 +64,18 @@ include_directories(Libs/ENet/include)
 add_subdirectory(Libs/ENet)
 
 
+# Add GLM
+include_directories(Libs/GLM)
+add_subdirectory(Libs/GLM)
+
+
 
 # Link all of the source files, add an executable and link the required libraries for your platform  
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.h)
 add_executable (${CMAKE_PROJECT_NAME} ${MY_SOURCES})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE box2d::box2d SDL3_mixer::SDL3_mixer SDL3::SDL3 Imgui)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3_mixer::SDL3_mixer SDL3_image::SDL3_image SDL3::SDL3 box2d::box2d Imgui)
 
 
 if(PRODUCTION_BUILD)

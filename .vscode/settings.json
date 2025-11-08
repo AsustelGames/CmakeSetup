@@ -1,0 +1,16 @@
+{
+   "C_Cpp.errorSquiggles": "enabled",
+   "files.associations": {
+      "cstdint": "cpp",
+      "random": "cpp",
+      "bit": "cpp",
+      "chrono": "cpp",
+      "cmath": "cpp",
+      "functional": "cpp",
+      "format": "cpp",
+      "limits": "cpp",
+      "ranges": "cpp",
+      "variant": "cpp",
+      "iosfwd": "cpp"
+   }
+}
