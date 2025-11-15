@@ -2,56 +2,45 @@
 
 
 #include "SDL3/SDL.h"
-#include "SDL3_image/SDL_image.h"
-#include "SDL3_mixer/SDL_mixer.h"
-#include "imgui.h"
-#include "imgui_impl_sdl3.h"
-#include "imgui_impl_sdlrenderer3.h"
+#include "miniaudio/miniaudio.h"
+#include "stb/stb_image.h"
+#include "stb/stb_truetype.h"
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_sdl3.h"
+#include "imgui/backends/imgui_impl_sdlrenderer3.h"
 #include "enet/enet.h"
-#include "FastNoiseLite.h"
+#include "fastnoiselite/FastNoiseLite.h"
 #include "box2d/box2d.h"
 #include "glm/glm.hpp"
 
 #include <iostream>
+#include <vector>
+#include <string>
 #include <cstdint>
+#include <fstream>
 
-
-struct Color
-{
-   uint8_t r, g, b, a;
-   
-   bool operator==(const Color& Other) const
-   {
-      return r == Other.r && g == Other.g && b == Other.b && a == Other.a;
-   }
-
-   bool operator!=(const Color& Other) const
-   {
-      return r != Other.r || g != Other.g || b != Other.b || a != Other.a;
-   }
-};
-
-inline std::ostream& operator<<(std::ostream& OS5, const Color& V5)
-{
-   OS5 << "(" << V5.r << ", " << V5.g << ", " << V5.b << ", " << V5.a <<  ")"; return OS5;
-}
+#include "Rendering/Colors.hpp"
+#include "Rendering/TextureManager/TextureManager.hpp"
 
 
 class Game
 {
 private:
-
+   
    
 public:
    SDL_Window* Window;
    SDL_Renderer* Renderer;
+   SDL_Event Event;
    double DT;
+   Color BackgroundColor = GRAY;
    bool *Close;
+   TextureManager TM;
+   
+   SDL_Texture* Square = TM.LoadTexture("grass", ASSETS_PATH"test.png");
    
    
-   SDL_Texture* Square = SDL_CreateTexture(Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 100, 100);
-   
-   Game(SDL_Window* Window_, SDL_Renderer* Renderer_, double DT_, bool *Close_);
+   Game(SDL_Window* Window_, SDL_Renderer* Renderer_, SDL_Event Event, double DT_, bool *Close_);
    ~Game();
    
    void Update();
@@ -59,4 +48,5 @@ public:
    void RenderGui();
    void ShouldClose();
    void AfterClose();
+   
 };
