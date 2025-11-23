@@ -8,6 +8,7 @@
 #include "SDL3/SDL.h"
 #include "stb/stb_image.h"
 
+
 class TextureManager
 {
 private:

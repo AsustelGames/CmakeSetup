@@ -3,30 +3,55 @@
 
 int main()
 {
-    SDL_Window* Window = SDL_CreateWindow("SDLProjectTemplate - Window", 640, 480, SDL_WINDOW_RESIZABLE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, USING_GL_GLES_MAJOR_VERSION); // USING_GL_GLES_MAJOR_VERSION defined in cmakelists.txt
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, USING_GL_GLES_MINOR_VERSION); // USING_GL_GLES_MINOR_VERSION defined in cmakelists.txt
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    
+    SDL_Window* Window = SDL_CreateWindow("SDLProjectTemplate - Window", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_GLContext GL = SDL_GL_CreateContext(Window);
     SDL_SetWindowMinimumSize(Window, 640, 480);
-    SDL_Renderer* Renderer = SDL_CreateRenderer(Window, NULL);
+    
+    SDL_GL_SetSwapInterval(1);
     
     SDL_Event Event;
-    
-    SDL_SetRenderVSync(Renderer, 1);
-    
+    glm::ivec2 WindowSize;
     bool ShouldWindowClose = false;
     
-    // Calculate DeltaTime // 1.0 / DeltaTime = FPS
     Uint64 LastFrame = SDL_GetPerformanceCounter();
-    double DeltaTime = 0.0;
+    double DeltaTime = 0.0; // Calculate DeltaTime // 1.0 / DeltaTime = FPS
     
-    Game MainGame(Window, Renderer, Event, DeltaTime, &ShouldWindowClose);
+    #if USING_GL_GLES_MAJOR_VERSION == 4
+        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+        {
+            std::cerr << "Failed to initialize GLAD" << '\n';
+            ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplSDL3_Shutdown(); ImGui::DestroyContext();
+            SDL_GL_DestroyContext(GL); SDL_DestroyWindow(Window); SDL_Quit();
+            return 1;
+        }
+        
+        enableReportGlErrors();
+    #else
+        if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
+        {
+            std::cerr << "Failed to initialize GLAD_GLES" << '\n';
+            ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplSDL3_Shutdown(); ImGui::DestroyContext();
+            SDL_GL_DestroyContext(GL); SDL_DestroyWindow(Window); SDL_Quit();
+            return 1;
+        }
+    #endif
+    
+    Game MainGame(Window, GL, Event, DeltaTime, &ShouldWindowClose);
     
     ImGui::CreateContext();
     ImGuiIO IO = ImGui::GetIO(); (void)IO;
 
-    ImGui_ImplSDL3_InitForSDLRenderer(Window, Renderer);
-    ImGui_ImplSDLRenderer3_Init(Renderer);
+    ImGui_ImplSDL3_InitForOpenGL(Window, GL);
+    ImGui_ImplOpenGL3_Init();
     
     while (!ShouldWindowClose)
     {
+        SDL_GetWindowSizeInPixels(Window, &WindowSize.x, &WindowSize.y);
+        
         while (SDL_PollEvent(&Event))
         {
             ImGui_ImplSDL3_ProcessEvent(&Event);
@@ -37,36 +62,39 @@ int main()
         }
         
         ImGui_ImplSDL3_NewFrame();
-        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
         
-        // Render Imgui //
+        //-- Render Imgui --//
         MainGame.RenderGui();
-
-        ImGui::Render();
-        COL_SetRenderDrawColor(Renderer, MainGame.BackgroundColor);
         
-        SDL_RenderClear(Renderer);
+        ImGui::Render();
+        SDL_GL_MakeCurrent(Window, GL);
+        glViewport(0, 0, WindowSize.x, WindowSize.y);
+        
+        // Fill window with color
+        COL_glClearColor(MainGame.BackgroundColor);
+        glClear(GL_COLOR_BUFFER_BIT);
         
         // Calculate DeltaTime
         Uint64 CurrentFrame = SDL_GetPerformanceCounter();
         DeltaTime = double(CurrentFrame - LastFrame) / SDL_GetPerformanceFrequency();
         LastFrame = CurrentFrame;
         
-        // Render/Update //
+        //-- Render & Update --//
         MainGame.Update();
         MainGame.Render();
         
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), Renderer);
-        SDL_RenderPresent(Renderer);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        SDL_GL_SwapWindow(Window);
     } 
     MainGame.AfterClose();
     
-    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 
-    SDL_DestroyRenderer(Renderer);
+    SDL_GL_DestroyContext(GL);
     SDL_DestroyWindow(Window);
     SDL_Quit();
     

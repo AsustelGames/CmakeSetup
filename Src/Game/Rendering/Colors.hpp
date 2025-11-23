@@ -2,6 +2,7 @@
 
 
 #include "SDL3/SDL.h"
+#include "glad/glad.h"
 
 #include <iostream>
 #include <cstdint>
@@ -27,9 +28,9 @@ inline std::ostream& operator<<(std::ostream& OS5, const Color& V5)
    OS5 << "(" << V5.r << ", " << V5.g << ", " << V5.b << ", " << V5.a <<  ")"; return OS5;
 }
 
-inline void COL_SetRenderDrawColor(SDL_Renderer *renderer_, Color Color_) // custom SDL_SetRenderDrawColor() that accepts Color datatype
+inline void COL_glClearColor(Color Color) // custom glClearColor() that accepts Color datatype
 {
-   SDL_SetRenderDrawColor(renderer_, Color_.r, Color_.g, Color_.b, Color_.a);
+   glClearColor(Color.r / 255.0f, Color.g / 255.0f, Color.b / 255.0f, Color.a / 255.0f);
 }
 
 #define BLACK {0, 0, 0, 255}
