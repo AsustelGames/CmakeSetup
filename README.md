@@ -1,15 +1,46 @@
-## SDLProjectTemplate by AsustelGames
-### 1. Quick info
-**Index:**
- 1. **Quick info**
- 2. **Features**
- 3. **Project Structure**
- 4. **Libraries**
- 5. **How to use**
- 6. **How to build**
+platforms
 
-### 2. Features
- 1. **Cross platform (probably):** It should support platforms such as: *Window, Linux, Mac, Web, IOS and Android.* But I haven't tested it on all of these platforms, I have only tested it on *Window.*
- 2. **OpenGL**
+windows
+linux
+mac
+web
+android
+ios
 
- 
+libs
+
+sdl3
+glm
+miniaudio
+sdl_net
+stb_trutype
+stb_image
+stb_image_write
+stb_image_resize2
+imgui
+enet
+box2d
+fnl
+assimp
+bgfx
+
+branches
+
+opengl
+vulkan
+sdl renderer
+
+
+nix-shell -p gnumake cmake ninja pkg-config sdl3 enet
+cmake -G Ninja -S . -B build
+cd build && ninja && cd ..
+cd .. && cd build && ./crossKittyEngine
+
+cmake -S . -B build
+cd build && make && cd ..
+
+sdl 3.4.0
+glad gl 4.6 core
+imgui
+glm
+box2d

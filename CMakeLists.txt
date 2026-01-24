@@ -1,179 +1,123 @@
-﻿cmake_minimum_required (VERSION 3.16)
-project (SDLProjectTemplate)
+cmake_minimum_required (VERSION 3.16)
+project (CmakeSetup)
 
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION True)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-option(PRODUCTION_BUILD "Make this a production build" False) # Clear cmake cache after editing
-option(OPENGL_DEBUGGING "Debug OpenGL" True) # Clear cmake cache after editing
-set(OPENGL_PLATFORM "Windows" CACHE STRING "Target platform for OpenGL") # Clear cmake cache after editing
-set_property(CACHE OPENGL_PLATFORM PROPERTY STRINGS Windows Linux MacOS Web Android Ios)
-
-if(MSVC) 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
-endif()
-
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION False)
+set(CMAKE_CXX_STANDARD 17)
 
 set(BUILD_SHARED_LIBS OFF)
 
-
-
-# Add Glad
-if(OPENGL_PLATFORM STREQUAL "Windows" OR OPENGL_PLATFORM STREQUAL "Linux")
-	if(NOT OPENGL_DEBUGGING)
-		set(GLAD_PATH Libs/Glad/Release/GL_4_6_Core)
-	else()
-		set(GLAD_PATH Libs/Glad/Debug/GL_4_6_Core)
-	endif()
-
-elseif(OPENGL_PLATFORM STREQUAL "MacOS")
-	if(NOT OPENGL_DEBUGGING)
-		set(GLAD_PATH Libs/Glad/Release/GL_4_1_Core)
-	else()
-		set(GLAD_PATH Libs/Glad/Debug/GL_4_1_Core)
-	endif()
-
-else()
-	if(OPENGL_PLATFORM STREQUAL "Web")
-		if(NOT OPENGL_DEBUGGING)
-			set(GLAD_PATH Libs/Glad/Release/GLES_3_0_Core)
-		else()
-			set(GLAD_PATH Libs/Glad/Debug/GLES_3_0_Core)
-		endif()
-
-	else()
-		if(NOT OPENGL_DEBUGGING)
-			set(GLAD_PATH Libs/Glad/Release/GLES_3_2_Core)
-		else()
-			set(GLAD_PATH Libs/Glad/Debug/GLES_3_2_Core)
-		endif()
-	endif()
+if(MSVC) 
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
+    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
 endif()
 
-include_directories(${GLAD_PATH}/include)
 
-set(Glad_SOURCES
-	${GLAD_PATH}/src/glad.c
+# SDL3
+include_directories(libs/sdl3/include)
+find_package(SDL3)
+if(NOT SDL3_FOUND)
+    add_subdirectory(libs/sdl3)
+endif()
+
+
+# Glad GL 4.6 Core
+include_directories(libs/glad/include)
+set(glad_sources libs/glad/src/glad.c)
+add_library(glad ${glad_sources})
+
+# GLM
+include_directories(libs/glm)
+add_subdirectory(libs/glm)
+
+# Enet
+include_directories(libs/enet/include)
+add_subdirectory(libs/enet)
+
+# SDL_Net
+include_directories(libs/sdl_net/include)
+add_subdirectory(libs/sdl_net)
+
+# Imgui
+include_directories(libs/imgui)
+set(imgui_sources
+   libs/imgui/imgui.cpp
+   libs/imgui/imgui_draw.cpp
+   libs/imgui/imgui_widgets.cpp
+   libs/imgui/imgui_tables.cpp
+   libs/imgui/imgui_demo.cpp
+   libs/imgui/backends/imgui_impl_sdl3.cpp
+   libs/imgui/backends/imgui_impl_opengl3.cpp
 )
+add_library(imgui ${imgui_sources} )
 
-add_library(Glad ${Glad_SOURCES})
+# MiniAudio
+include_directories(libs/miniaudio)
+add_subdirectory(libs/miniaudio)
 
+# FastNoiseLite
+include_directories(libs/fnl)
 
-# Add SDL3
-include_directories(Libs/SDL/include)
-add_subdirectory(Libs/SDL)
+# Assimp
+#include_directories(libs/assimp/include)
+#add_subdirectory(libs/assimp)
 
-
-# Add SDL3
-include_directories(Libs/SDL_Net/include)
-add_subdirectory(Libs/SDL_Net)
-
-
-# Add Box2D
-include_directories(Libs/Box2D/include)
-add_subdirectory(Libs/Box2D)
-
-
-# Add FastNoiseLite
-include_directories(Libs/FastNoiseLite)
-
-
-# Add STB
-include_directories(Libs/STB)
-
-set(STB_Image_SOURCES
-	Libs/STB/stb_image.cpp
-	Libs/STB/stb_image_resize2.cpp
-	Libs/STB/stb_image_write.cpp
-	Libs/STB/stb_truetype.cpp
+# stb image, image_write, image_resize2, truetype, 
+include_directories(libs/stb)
+set(stb_sources
+	libs/stb/stb_image.cpp
+	libs/stb/stb_image_resize2.cpp
+	libs/stb/stb_image_write.cpp
+	libs/stb/stb_truetype.cpp
 )
-
-add_library(STB_Image ${STB_Image_SOURCES})
-
-
-# Add Imgui
-include_directories(Libs/Imgui)
-include_directories(Libs/Imgui/imgui)
-
-set(Imgui_SOURCES
-   Libs/Imgui/imgui/imgui.cpp
-   Libs/Imgui/imgui/imgui_draw.cpp
-   Libs/Imgui/imgui/imgui_widgets.cpp
-   Libs/Imgui/imgui/imgui_tables.cpp
-   Libs/Imgui/imgui/imgui_demo.cpp
-	Libs/Imgui/imgui/backends/imgui_impl_sdl3.cpp
-	Libs/Imgui/imgui/backends/imgui_impl_opengl3.cpp
-)
-
-add_library(Imgui ${Imgui_SOURCES} )
+add_library(stb ${stb_sources})
 
 
-# Add ENet
-include_directories(Libs/ENet/include)
-add_subdirectory(Libs/ENet)
+option(PRODUCTION_BUILD "Make this a production build" False) # Clear cmake cache after editing
 
-
-# Add GLM
-include_directories(Libs/GLM)
-add_subdirectory(Libs/GLM)
-
-
-# Add MiniAudio
-include_directories(Libs/MiniAudio)
-add_subdirectory(Libs/MiniAudio/miniaudio)
-
-
-
-# Link all of the source files, add an executable and link the required libraries for your platform  
-file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.h)
-add_executable (${CMAKE_PROJECT_NAME} ${MY_SOURCES})
+# Get all .c, .h .cpp and .hpp files
+set(src_path "${CMAKE_CURRENT_SOURCE_DIR}/src")
+file(GLOB_RECURSE my_sources CONFIGURE_DEPENDS ${src_path}/*.cpp ${src_path}/*.hpp ${src_path}/*.c ${src_path}/*.h)
+add_executable (${CMAKE_PROJECT_NAME} ${my_sources})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE STB_Image miniaudio SDL3_net::SDL3_net SDL3::SDL3 box2d::box2d Imgui Glad)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3_net::SDL3_net SDL3::SDL3 stb imgui miniaudio enet glm glad)
 
 
-if(PRODUCTION_BUILD)
-	# setup the ASSETS_PATH macro to be in the root folder of your exe
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./Assets/")
-
-	# remove the option to debug asserts.
+if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
+	set(ASSETS_PATH "./Assets")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./Assets/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1)
 else()
-	# This is useful to get an ASSETS_PATH in your IDE during development
+    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
 	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Assets/")
-	
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0)
 endif()
 
-if(MSVC) # If using the VS compiler...
 
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
+if(WIN32) # Windows
+    set(device_system "WINDOWS")
+    set(device_type "COMPUTER")
+elseif(UNIX AND NOT APPLE) # Linux
+    set(device_system "LINUX")
+    set(device_type "COMPUTER")
+elseif(APPLE) # MacOS
+    set(device_system "MACOS")
+    set(device_type "COMPUTER")
+else() # Unknown
+    set(device_system "UNKNOWN")
+    set(device_type "UNKNOWN")
 endif()
 
-# Defining USING_GL/GLES_VERSION_...
-if(OPENGL_PLATFORM STREQUAL "Windows" OR OPENGL_PLATFORM STREQUAL "Linux")
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MAJOR_VERSION=4)
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MINOR_VERSION=6)
-elseif(OPENGL_PLATFORM STREQUAL "MacOS")
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MAJOR_VERSION=4)
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MINOR_VERSION=1)
-else()
-	if(OPENGL_PLATFORM STREQUAL "Web")
-		target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MAJOR_VERSION=3)
-		target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MINOR_VERSION=0)
-	else()
-		target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MAJOR_VERSION=3)
-		target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC USING_GL_GLES_MINOR_VERSION=2)
-	endif()
-endif()
-
-message(STATUS "${CMAKE_PROJECT_NAME}: PRODUCTION_BUILD = '${PRODUCTION_BUILD}'")
-message(STATUS "${CMAKE_PROJECT_NAME}: OPENGL_PLATFORM = '${OPENGL_PLATFORM}'")
-message(STATUS "${CMAKE_PROJECT_NAME}: OPENGL_DEBUGGING = '${OPENGL_DEBUGGING}'")
-
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEVICE_SYSTEM="${device_system}")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEVICE_TYPE="${device_type}")
+message(NOTICE "+== ${CMAKE_PROJECT_NAME}")
+message(NOTICE "|==> DEVICE_SYSTEM = ${device_system}")
+message(NOTICE "|==> DEVICE_TYPE = ${device_type}")
+message(NOTICE "|==> PRODUCTION_BUILD = ${PRODUCTION_BUILD}")
+message(NOTICE "+== ")
