@@ -16,8 +16,9 @@
 #include <string>
 #include <cstdint>
 #include <fstream>
+#include <algorithm>
 
-#include "rendering/colors.hpp"
+#include "tools/colors.hpp"
 //#include "Rendering/TextureManager/TextureManager.hpp"
 
 
@@ -27,15 +28,17 @@ private:
    SDL_Window* Window;
    SDL_GLContext GL;
    SDL_Event Event;
-   glm::ivec2 WindowSize;
-   bool *Close;
-   double DT;
+   glm::ivec2 WindowLogicalSize; // Actual window size, used for mostly everything
+   glm::ivec2 WindowPixelSize; // HIDPI window size (scaled up) , used for pixel perfect render and some opengl stuff
+   bool *Close; // Close the window
+   double DT; // DeltaTime
    
    //TextureManager TM;
    //SDL_Texture* Square = TM.LoadTexture("grass", ASSETS_PATH"test.png");
    
    
 public:
+   std::string Title = "Game";
    Color BackgroundColor = GRAY;
    
    

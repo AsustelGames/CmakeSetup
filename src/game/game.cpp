@@ -9,7 +9,8 @@ GL(GL_), Event(Event_), DT(DT_), Close(Close_)
 
 void Game::Update()
 {
-   SDL_GetWindowSizeInPixels(Window, &WindowSize.x, &WindowSize.y);
+   SDL_GetWindowSize(Window, &WindowLogicalSize.x, &WindowLogicalSize.y); // Actual window size, used for mostly everything
+   SDL_GetWindowSizeInPixels(Window, &WindowPixelSize.x, &WindowPixelSize.y); // HIDPI window size (scaled up) , used for pixel perfect render and some opengl stuff
 }
 
 void Game::Render()
@@ -18,6 +19,8 @@ void Game::Render()
    // update TextureManager
    // add the rotating grass block
    // add aiso
+   // add more device detection in cmakelists.txt
+   // set use opengl in cmakelists.txt
 }
 
 void Game::RenderGui()
@@ -37,7 +40,7 @@ void Game::ShouldClose()
 
 void Game::AfterClose()
 {
-   std::cout << "Window Closed" << '\n';
+   
 }
 
 Game::~Game()

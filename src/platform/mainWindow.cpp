@@ -7,7 +7,7 @@ int main()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     
-    SDL_Window* Window = SDL_CreateWindow("SDLProjectTemplate - Window", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    SDL_Window* Window = SDL_CreateWindow("CmakeSetup - Window", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     SDL_GLContext GL = SDL_GL_CreateContext(Window);
     SDL_SetWindowMinimumSize(Window, 640, 480);
     
@@ -22,7 +22,7 @@ int main()
     
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
-        std::cerr << "Failed to initialize GLAD" << '\n';
+        std::cerr << "Failed to initialize glad" << '\n';
         ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplSDL3_Shutdown(); ImGui::DestroyContext();
         SDL_GL_DestroyContext(GL); SDL_DestroyWindow(Window); SDL_Quit();
         return 1;
@@ -31,6 +31,7 @@ int main()
     enableReportGlErrors();
     
     Game MainGame(Window, GL, Event, DeltaTime, &ShouldWindowClose);
+    SDL_SetWindowTitle(Window, MainGame.Title.c_str());
     
     ImGui::CreateContext();
     ImGuiIO IO = ImGui::GetIO(); (void)IO;
@@ -63,7 +64,7 @@ int main()
         glViewport(0, 0, WindowSize.x, WindowSize.y);
         
         // Fill window with color
-        COL_glClearColor(MainGame.BackgroundColor);
+        Tool_glClearColor(MainGame.BackgroundColor);
         glClear(GL_COLOR_BUFFER_BIT);
         
         // Calculate DeltaTime
@@ -79,6 +80,7 @@ int main()
         SDL_GL_SwapWindow(Window);
     } 
     MainGame.AfterClose();
+    std::cout << MainGame.Title << " Window Closed" << '\n';
     
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
@@ -89,6 +91,7 @@ int main()
     SDL_Quit();
     
     MainGame.~Game();
+    std::cout << MainGame.Title << " Destroyed" << '\n';
     
     return 0;
 }

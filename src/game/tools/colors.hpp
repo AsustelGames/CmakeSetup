@@ -27,12 +27,12 @@ inline std::ostream& operator<<(std::ostream& OS, const Color& C)
    OS << "(" << C.r << ", " << C.g << ", " << C.b << ", " << C.a <<  ")"; return OS;
 }
 
-inline void COL_glClearColor(Color Col) // wrapper for glClearColor() that accepts the Color datatype
+inline void Tool_glClearColor(Color Col) // wrapper for glClearColor() that accepts the Color datatype
 {
    glClearColor(Col.r / 255.0f, Col.g / 255.0f, Col.b / 255.0f, Col.a / 255.0f);
 }
 
-inline Color COL_invertColor(Color Col, bool InvertAlpha = false)
+inline Color Tool_invertColor(Color Col, bool InvertAlpha = false)
 {
    Color InvertedColor = Col;
 

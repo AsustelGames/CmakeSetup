@@ -1,4 +1,3 @@
-
 #include "errorReportingOpenGL.hpp"
 #include <iostream>
 
