@@ -67,7 +67,7 @@ include_directories(libs/fnl)
 #include_directories(libs/assimp/include)
 #add_subdirectory(libs/assimp)
 
-# stb image, image_write, image_resize2, truetype, 
+# stb image, image_write, image_resize2 and stb_truetype
 include_directories(libs/stb)
 set(stb_sources
 	libs/stb/stb_image.cpp

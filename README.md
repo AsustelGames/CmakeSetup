@@ -5,10 +5,17 @@ so you need to implement image and font loading for opengl using stb
 
 
 
+
+
+
+
+
+
+
 nix-shell -p gnumake cmake ninja pkg-config sdl3 enet
-cmake -G Ninja -S . -B build
-cd build && ninja && cd ..
-cd .. && cd build && ./CmakeSetup
+cmake -G Ninja -S . -B build # configure
+cd build && ninja && cd .. # build
+cd .. && cd build && ./CmakeSetup # run
 
 cmake -S . -B build
 cd build && make && cd ..
