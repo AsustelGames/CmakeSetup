@@ -29,12 +29,12 @@ endif()
 
 # SDL_TTF
 set(SDLTTF_VENDORED ON)
-include_directories(libs/sdl_ttf/include)
-add_subdirectory(libs/sdl_ttf)
+include_directories(libs/SDL_ttf/include)
+add_subdirectory(libs/SDL_ttf)
 
 # SDL_Image
-include_directories(libs/sdl_image/include)
-add_subdirectory(libs/sdl_image)
+include_directories(libs/SDL_image/include)
+add_subdirectory(libs/SDL_image)
 
 # Glad GL 4.6 Core
 include_directories(libs/Glad/include)
@@ -74,8 +74,8 @@ add_subdirectory(libs/Miniaudio)
 include_directories(libs/FNL)
 
 # Box2D
-include_directories(libs/box2d/include)
-add_subdirectory(libs/box2d)
+include_directories(libs/Box2D/include)
+add_subdirectory(libs/Box2D)
 
 # Assimp
 #include_directories(libs/assimp/include)
