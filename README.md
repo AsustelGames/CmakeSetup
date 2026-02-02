@@ -2,16 +2,6 @@ notice
 currently font and image_loader tools don't support opengl 
 so you need to implement image and font loading for opengl using stb
 
-
-
-
-
-
-
-
-
-
-
 nix-shell -p gnumake cmake ninja pkg-config sdl3 enet
 cmake -G Ninja -S . -B build # configure
 cd build && ninja && cd .. # build

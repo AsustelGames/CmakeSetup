@@ -1,7 +1,9 @@
 #pragma once
 
 
-#include "glad/glad.h"
+#ifdef USE_OPENGL
+   #include "glad/glad.h"
+#endif
 
 #include <iostream>
 #include <cstdint>
@@ -27,12 +29,21 @@ inline std::ostream& operator<<(std::ostream& OS, const Color& C)
    OS << "(" << C.r << ", " << C.g << ", " << C.b << ", " << C.a <<  ")"; return OS;
 }
 
-inline void Tool_glClearColor(Color Col) // wrapper for glClearColor() that accepts the Color datatype
+
+inline void Tool_SetRenderDrawColor(SDL_Renderer* Renderer_, Color Col) // Wrapper function for SDL_SetRenderDrawColor() that accepts the Color datatype
 {
-   glClearColor(Col.r / 255.0f, Col.g / 255.0f, Col.b / 255.0f, Col.a / 255.0f);
+   SDL_SetRenderDrawColor(Renderer_, Col.r, Col.g, Col.b, Col.a);
 }
 
-inline Color Tool_invertColor(Color Col, bool InvertAlpha = false)
+#ifdef USE_OPENGL
+   inline void Tool_glClearColor(Color Col) // Wrapper function for glClearColor() that accepts the Color datatype
+   {
+      glClearColor(Col.r / 255.0f, Col.g / 255.0f, Col.b / 255.0f, Col.a / 255.0f);
+   }
+#endif
+
+
+inline Color Tool_invertColor(Color Col, bool InvertAlpha = false) // Inverts Colors
 {
    Color InvertedColor = Col;
 

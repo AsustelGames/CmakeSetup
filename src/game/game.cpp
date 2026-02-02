@@ -1,8 +1,8 @@
 #include "game.hpp"
 
 
-Game::Game(SDL_Window* Window_, SDL_GLContext GL_, SDL_Event Event_, double DT_, bool *Close_) : Window(Window_),
-GL(GL_), Event(Event_), DT(DT_), Close(Close_)
+Game::Game(SDL_Window* Window_, SDL_Renderer* R_, SDL_GLContext GL_, SDL_Event Event_, double& DT_, bool *Close_) : Window(Window_),
+R(R_), GL(GL_), Event(Event_), DT(DT_), Close(Close_)
 {
    
 }
@@ -19,8 +19,6 @@ void Game::Render()
    // update TextureManager
    // add the rotating grass block
    // add aiso
-   // add more device detection in cmakelists.txt
-   // set use opengl in cmakelists.txt
 }
 
 void Game::RenderGui()
@@ -33,17 +31,17 @@ void Game::RenderGui()
    ImGui::End();
 }
 
-void Game::ShouldClose()
+void Game::ShouldClose() // Runs after you press the x on the window
 {
    if (Close) {*Close = true;}
 }
 
-void Game::AfterClose()
+void Game::AfterClose() // Runs after the window is destroyed
 {
    
 }
 
-Game::~Game()
+Game::~Game() // Runs after everything is destroyed
 {
    
 }

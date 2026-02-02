@@ -1,15 +1,15 @@
 #pragma once
 
-#include "glm/glm.hpp"
+
 #include <algorithm>
 
-inline glm::ivec2 Tool_GetSizeInPercent_IVec2(glm::ivec2 Size, int Percent)
+
+inline float Tool_GetXInPercent(float X, int Percent) // Gets size of x in percent and returns it in float
 {
-   glm::ivec2 Result;
+   float Result = X;
    std::clamp(Percent, 1, 100);
    
-   Result.x = Result.x / (Result.x / Percent);
-   Result.y = Result.y / (Result.y / Percent);
-
+   Result = Result / (Result / Percent);
+   
    return Result;
 }
