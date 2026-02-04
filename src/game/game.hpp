@@ -2,15 +2,11 @@
 
 
 #include "SDL3/SDL.h"
-#include "SDL3_image/SDL_image.h"
-#include "SDL3_ttf/SDL_ttf.h"
-#include "box2d/box2d.h"
 #include "miniaudio.h"
 #include "stb_image.h"
 #include "stb_truetype.h"
 #include "imgui.h"
 #include "enet.h"
-#include "SDL3_net/SDL_net.h"
 #include "fastnoiselite.h"
 #include "glm/glm.hpp"
 
@@ -36,6 +32,7 @@ private:
    glm::ivec2 WindowPixelSize; // HIDPI window size (scaled up) , used for pixel perfect render and some opengl stuff
    bool *Close; // Close the window
    double& DT; // DeltaTime
+   
    
    //TextureManager TM;
    //SDL_Texture* Square = TM.LoadTexture("grass", ASSETS_PATH"test.png");

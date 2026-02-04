@@ -10,86 +10,56 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(BUILD_SHARED_LIBS OFF)
 
-if(MSVC) 
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
-endif()
-
 
 # SDL3
 include_directories(libs/sdl3/include)
 find_package(SDL3)
 if(NOT SDL3_FOUND)
-    add_subdirectory(libs/Sdl3)
+    add_subdirectory(libs/sdl3)
 endif()
 
-
-
-# SDL_TTF
-set(SDLTTF_VENDORED ON)
-include_directories(libs/SDL_ttf/include)
-add_subdirectory(libs/SDL_ttf)
-
-# SDL_Image
-include_directories(libs/SDL_image/include)
-add_subdirectory(libs/SDL_image)
-
 # Glad GL 4.6 Core
-include_directories(libs/Glad/include)
-set(glad_sources libs/Glad/src/glad.c)
+set(glad_sources libs/glad/src/glad.c)
 add_library(glad ${glad_sources})
+target_include_directories(glad PUBLIC libs/glad/include)
 
 # GLM
-include_directories(libs/Glm)
-add_subdirectory(libs/Glm)
+include_directories(libs/glm)
+add_subdirectory(libs/glm)
 
 # Enet
-include_directories(libs/Enet/include)
-add_subdirectory(libs/Enet)
-
-# SDL_Net
-include_directories(libs/Sdl_net/include)
-add_subdirectory(libs/Sdl_net)
+include_directories(libs/enet/include)
+add_subdirectory(libs/enet)
 
 # Imgui
-include_directories(libs/Imgui)
 set(imgui_sources
-   libs/Imgui/imgui.cpp
-   libs/Imgui/imgui_draw.cpp
-   libs/Imgui/imgui_widgets.cpp
-   libs/Imgui/imgui_tables.cpp
-   libs/Imgui/imgui_demo.cpp
-   libs/Imgui/backends/imgui_impl_sdl3.cpp
-   libs/Imgui/backends/imgui_impl_opengl3.cpp
+   libs/imgui/imgui.cpp
+   libs/imgui/imgui_draw.cpp
+   libs/imgui/imgui_widgets.cpp
+   libs/imgui/imgui_tables.cpp
+   libs/imgui/imgui_demo.cpp
+   libs/imgui/backends/imgui_impl_sdl3.cpp
+   libs/imgui/backends/imgui_impl_opengl3.cpp
+   libs/imgui/backends/imgui_impl_sdlrenderer3.cpp
 )
-add_library(imgui ${imgui_sources} )
+add_library(imgui ${imgui_sources})
+target_include_directories(imgui PUBLIC libs/imgui libs/imgui/backends)
 
 # MiniAudio
-include_directories(libs/Miniaudio)
-add_subdirectory(libs/Miniaudio)
+include_directories(libs/miniaudio)
+add_subdirectory(libs/miniaudio)
 
 # FastNoiseLite
-include_directories(libs/FNL)
-
-# Box2D
-include_directories(libs/Box2D/include)
-add_subdirectory(libs/Box2D)
+include_directories(libs/fnl)
 
 # Assimp
 #include_directories(libs/assimp/include)
 #add_subdirectory(libs/assimp)
 
 # stb image, image_write, image_resize2 and stb_truetype
-include_directories(libs/Stb)
-set(stb_sources
-	libs/Stb/stb_image.cpp
-	libs/Stb/stb_image_resize2.cpp
-	libs/Stb/stb_image_write.cpp
-	libs/Stb/stb_truetype.cpp
-)
-add_library(stb ${stb_sources})
+set(stb_sources libs/stb/stb.cpp)
+add_library(stb INTERFACE ${stb_sources})
+target_include_directories(stb INTERFACE libs/stb)
 
 
 # Rebuild your project after changing these options
@@ -103,7 +73,7 @@ file(GLOB_RECURSE my_sources CONFIGURE_DEPENDS ${src_path}/*.cpp ${src_path}/*.h
 add_executable (${CMAKE_PROJECT_NAME} ${my_sources})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf SDL3_net::SDL3_net SDL3::SDL3 stb imgui miniaudio enet glm glad box2d)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio enet glm glad)
 
 
 if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
@@ -123,6 +93,12 @@ else()
     set(using_opengl "FALSE")
 endif()
 
+if(MSVC) 
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
+    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
+endif()
 
 if(EMSCRIPTEN)
     set(device_system "WEB")
