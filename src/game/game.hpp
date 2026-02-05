@@ -18,7 +18,7 @@
 #include <algorithm>
 
 #include "tools/colors.hpp"
-//#include "Rendering/TextureManager/TextureManager.hpp"
+#include "tools/x_in_percent.hpp"
 
 
 class Game
@@ -29,15 +29,16 @@ private:
    SDL_GLContext GL;
    SDL_Event Event;
    glm::ivec2 WindowLogicalSize; // Actual window size, used for mostly everything
-   glm::ivec2 WindowPixelSize; // HIDPI window size (scaled up) , used for pixel perfect render and some opengl stuff
+   glm::ivec2 WindowPixelSize; // HIDPI window size (scaled up), used for pixel perfect rendering and some opengl stuff
    bool *Close; // Close the window
-   double& DT; // DeltaTime
+   double& DT; // DeltaTime, 1.0 / DT = FPS
    
    
-   //TextureManager TM;
-   //SDL_Texture* Square = TM.LoadTexture("grass", ASSETS_PATH"test.png");
-   
-   
+   /// Example code you can safely delete
+   double I = 0;
+   uint32_t Pixels[100*100];
+   SDL_Texture* Texture = SDL_CreateTexture(R, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, 100, 100);
+   /// Example code you can safely delete
 public:
    std::string Title = "Game";
    Color BackgroundColor = GRAY;

@@ -11,19 +11,23 @@ cmake -S . -B build
 cd build && make && cd ..
 
 # CmakeSetup
+
+[logo]: https://github.com/AsustelGames/CmakeSetup/screenshot.png "screenshot"
+
+## Overview
 ## Project Structure
 
 ## Libraries
 - sdl 3.4.0
-- sdl_net
 - miniaudio
-- glad opengl 4.6 core
+- glad (opengl 4.6 core)
 - imgui
 - glm
 - enet
-- fnl
+- fastnoiselite
 - assimp
-- stb_image
-- stb_image_write
-- stb_image_resize2
-- stb_trutype
+- stb
+-- stb_image
+-- stb_image_write
+-- stb_image_resize2
+-- stb_trutype

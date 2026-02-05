@@ -14,6 +14,8 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
+#include <iostream>
+
 #include "errorReportingOpenGL.hpp"
 
 #include "../game/game.hpp"

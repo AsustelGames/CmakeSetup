@@ -12,6 +12,7 @@ int main()
         SDL_GLContext GL = SDL_GL_CreateContext(Window);
         SDL_GL_SetSwapInterval(1);
         SDL_Renderer* Renderer = nullptr;
+        std::cout << "Using OpenGL" << '\n';
         
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
@@ -24,15 +25,17 @@ int main()
     #else
         SDL_Window* Window = SDL_CreateWindow("CmakeSetup - Window", 640, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
         SDL_GLContext GL = nullptr;
-        SDL_Renderer* Renderer = SDL_CreateRenderer(Window, nullptr);
-        
-        //SDL_SetRenderVSync(Renderer, 1); // idk
+        SDL_Renderer* Renderer = SDL_CreateRenderer(Window, NULL);
+        std::cout << "Using SDL_Renderer" << '\n';
     #endif
     
     SDL_SetWindowMinimumSize(Window, 640, 480);
 
     SDL_Event Event;
-    glm::ivec2 WindowSize;
+    glm::ivec2 WindowLogicalSize;
+    glm::ivec2 WindowPixelSize;
+    glm::vec2 DisplayScale;
+    
     bool ShouldWindowClose = false;
     
     Uint64 LastFrame = SDL_GetPerformanceCounter();
@@ -50,10 +53,12 @@ int main()
         ImGui_ImplSDL3_InitForSDLRenderer(Window, Renderer);
         ImGui_ImplSDLRenderer3_Init(Renderer);
     #endif
-    
+
     while (!ShouldWindowClose)
     {
-        SDL_GetWindowSizeInPixels(Window, &WindowSize.x, &WindowSize.y);
+        SDL_GetWindowSize(Window, &WindowLogicalSize.x, &WindowLogicalSize.y);
+        SDL_GetWindowSizeInPixels(Window, &WindowPixelSize.x, &WindowPixelSize.y);
+        DisplayScale = {WindowPixelSize.x / (float)WindowLogicalSize.x, WindowPixelSize.y / (float)WindowLogicalSize.y};
         
         while (SDL_PollEvent(&Event))
         {
@@ -74,7 +79,7 @@ int main()
         
         #ifdef USE_OPENGL
             SDL_GL_MakeCurrent(Window, GL);
-            glViewport(0, 0, WindowSize.x, WindowSize.y);
+            glViewport(0, 0, WindowLogicalSize.x, WindowLogicalSize.y);
             
             // Fill window with color
             Tool_glClearColor(MainGame.BackgroundColor);
@@ -102,6 +107,7 @@ int main()
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             SDL_GL_SwapWindow(Window);
         #else
+            SDL_SetRenderScale(Renderer, DisplayScale.x, DisplayScale.y); // This is to fix HIDPI issue with imgui while using the SDL_Renderer
             ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), Renderer);
             SDL_RenderPresent(Renderer);
         #endif
@@ -123,7 +129,6 @@ int main()
     SDL_DestroyWindow(Window);
     SDL_Quit();
     
-    //MainGame.~Game();
     std::cout << MainGame.Title << " Destroyed" << '\n';
     
     return 0;

@@ -6,10 +6,7 @@
 
 inline float Tool_GetXInPercent(float X, int Percent) // Gets size of x in percent and returns it in float
 {
-   float Result = X;
-   std::clamp(Percent, 1, 100);
-   
-   Result = Result / (Result / Percent);
-   
-   return Result;
+    int ClampedPercent = std::clamp(Percent, 0, 100);
+    
+    return X * ClampedPercent / 100.0f;
 }

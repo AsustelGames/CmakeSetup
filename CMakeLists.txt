@@ -64,7 +64,7 @@ target_include_directories(stb INTERFACE libs/stb)
 
 # Rebuild your project after changing these options
 option(PRODUCTION_BUILD "Make this a production build" False)
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer" True)
+option(USE_OPENGL "Use OpenGL instead of SDL Renderer" False)
 
 
 # Get all .c, .h .cpp and .hpp files
