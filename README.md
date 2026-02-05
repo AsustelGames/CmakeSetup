@@ -11,8 +11,7 @@ cmake -S . -B build
 cd build && make && cd ..
 
 # CmakeSetup
-
-[]: https://github.com/AsustelGames/CmakeSetup/screenshot.png "screenshot"
+![](https://github.com/AsustelGames/CmakeSetup/blob/main/screenshot.png)
 
 ## Overview
 ## Project Structure
