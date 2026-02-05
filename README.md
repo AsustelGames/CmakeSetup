@@ -12,7 +12,7 @@ cd build && make && cd ..
 
 # CmakeSetup
 
-[logo]: https://github.com/AsustelGames/CmakeSetup/screenshot.png "screenshot"
+[]: https://github.com/AsustelGames/CmakeSetup/screenshot.png "screenshot"
 
 ## Overview
 ## Project Structure
