@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.16)
 project (CmakeSetup)
 
 
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION True)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD 17)
@@ -24,8 +24,8 @@ add_library(glad ${glad_sources})
 target_include_directories(glad PUBLIC libs/glad/include)
 
 # GLM
-include_directories(libs/glm)
-add_subdirectory(libs/glm)
+add_library(glm INTERFACE)
+target_include_directories(glm INTERFACE libs/glm)
 
 # Enet
 include_directories(libs/enet/include)
@@ -46,25 +46,37 @@ add_library(imgui ${imgui_sources})
 target_include_directories(imgui PUBLIC libs/imgui libs/imgui/backends)
 
 # MiniAudio
-include_directories(libs/miniaudio)
 add_subdirectory(libs/miniaudio)
+target_include_directories(miniaudio PRIVATE libs/miniaudio)
 
 # FastNoiseLite
 include_directories(libs/fnl)
 
 # Assimp
-#include_directories(libs/assimp/include)
-#add_subdirectory(libs/assimp)
+set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build zlib")
+
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "Disable all importers")
+set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "Disable all exporters")
+
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "Enable OBJ importer")
+set(ASSIMP_BUILD_OBJ_EXPORTER ON CACHE BOOL "Enable OBJ exporter")
+set(ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "Enable FBX importer")
+set(ASSIMP_BUILD_FBX_EXPORTER ON CACHE BOOL "Enable FBX exporter")
+
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable samples")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable tests")
+
+include_directories(libs/assimp/include)
+add_subdirectory(libs/assimp)
 
 # stb image, image_write, image_resize2 and stb_truetype
-set(stb_sources libs/stb/stb.cpp)
-add_library(stb INTERFACE ${stb_sources})
+add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE libs/stb)
 
 
 # Rebuild your project after changing these options
 option(PRODUCTION_BUILD "Make this a production build" False)
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer" False)
+option(USE_OPENGL "Use OpenGL instead of SDL Renderer" True)
 
 
 # Get all .c, .h .cpp and .hpp files
