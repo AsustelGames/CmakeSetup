@@ -29,7 +29,6 @@ target_include_directories(glm INTERFACE libs/glm)
 
 # Enet
 include_directories(libs/enet/include)
-add_subdirectory(libs/enet)
 
 # Imgui
 set(imgui_sources
@@ -85,7 +84,7 @@ file(GLOB_RECURSE my_sources CONFIGURE_DEPENDS ${src_path}/*.cpp ${src_path}/*.h
 add_executable (${CMAKE_PROJECT_NAME} ${my_sources})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio enet glm glad)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio glm glad)
 
 
 if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
@@ -141,12 +140,12 @@ else()
     set(device_type "UNKNOWN")
 endif()
 
-target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEVICE_SYSTEM="${device_system}")
-target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEVICE_TYPE="${device_type}")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_SYSTEM="${device_system}")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_TYPE="${device_type}")
 
 message(NOTICE "+== ${CMAKE_PROJECT_NAME}")
 message(NOTICE "|==> USE_OPENGL = ${using_opengl}")
-message(NOTICE "|==> DEVICE_SYSTEM = ${device_system}")
-message(NOTICE "|==> DEVICE_TYPE = ${device_type}")
+message(NOTICE "|==> CURRENT_DEVICE_SYSTEM = ${device_system}")
+message(NOTICE "|==> CURRENT_DEVICE_TYPE = ${device_type}")
 message(NOTICE "|==> PRODUCTION_BUILD = ${PRODUCTION_BUILD}")
 message(NOTICE "+== ")

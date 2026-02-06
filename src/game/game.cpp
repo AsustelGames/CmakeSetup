@@ -2,7 +2,7 @@
 
 
 Game::Game(SDL_Window* Window_, SDL_Renderer* R_,
-SDL_GLContext GL_, SDL_Event Event_, double& DT_,
+SDL_GLContext GL_, SDL_Event& Event_, double& DT_,
 bool *Close_) : Window(Window_), R(R_), GL(GL_), 
 Event(Event_), DT(DT_), Close(Close_)
 {

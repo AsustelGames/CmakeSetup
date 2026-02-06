@@ -44,7 +44,7 @@ public:
    Color BackgroundColor = GRAY;
    
    
-   Game(SDL_Window* Window_, SDL_Renderer* R_, SDL_GLContext GL_, SDL_Event Event_, double& DT_, bool *Close_);
+   Game(SDL_Window* Window_, SDL_Renderer* R_, SDL_GLContext GL_, SDL_Event& Event_, double& DT_, bool *Close_);
    ~Game();
    
    void Update();
