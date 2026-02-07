@@ -17,10 +17,10 @@
 - fastnoiselite
 - assimp
 - stb
--- stb_image
--- stb_image_write
--- stb_image_resize2
--- stb_trutype
+  - stb_image
+  - stb_image_write
+  - stb_image_resize2
+  - stb_trutype
 ## Features
 - You can switch between **OpenGL** and **SDL_Renderer** (more info in **Additional Info** section)
 - Good Project structure
