@@ -45,25 +45,28 @@ add_library(imgui ${imgui_sources})
 target_include_directories(imgui PUBLIC libs/imgui libs/imgui/backends)
 
 # MiniAudio
-add_subdirectory(libs/miniaudio)
-target_include_directories(miniaudio PRIVATE libs/miniaudio)
+add_library(miniaudio INTERFACE)
+target_include_directories(miniaudio INTERFACE libs/miniaudio)
 
 # FastNoiseLite
 include_directories(libs/fnl)
 
 # Assimp
-set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build zlib")
+set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "")
 
-set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "Disable all importers")
-set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "Disable all exporters")
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 
-set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "Enable OBJ importer")
-set(ASSIMP_BUILD_OBJ_EXPORTER ON CACHE BOOL "Enable OBJ exporter")
-set(ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "Enable FBX importer")
-set(ASSIMP_BUILD_FBX_EXPORTER ON CACHE BOOL "Enable FBX exporter")
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_OBJ_EXPORTER ON CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_FBX_EXPORTER ON CACHE BOOL "" FORCE)
 
-set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Disable samples")
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable tests")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+
 
 include_directories(libs/assimp/include)
 add_subdirectory(libs/assimp)
@@ -73,7 +76,7 @@ add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE libs/stb)
 
 
-# Rebuild your project after changing these options
+# Reconfigure your project after changing these options
 option(PRODUCTION_BUILD "Make this a production build" False)
 option(USE_OPENGL "Use OpenGL instead of SDL Renderer" True)
 
@@ -86,22 +89,8 @@ set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio glm glad)
 
-
-if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
-	set(ASSETS_PATH "./Assets")
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./Assets/")
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1)
-else()
-    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Assets/")
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0)
-endif()
-
-if(USE_OPENGL) # Define USE_OPENGL depending on USE_OPENGL option
-    set(using_opengl "TRUE")
+if(USE_OPENGL)
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USE_OPENGL)
-else()
-    set(using_opengl "FALSE")
 endif()
 
 if(MSVC) 
@@ -110,6 +99,7 @@ if(MSVC)
     add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
     target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
 endif()
+
 
 if(EMSCRIPTEN)
     set(device_system "WEB")
@@ -140,11 +130,26 @@ else()
     set(device_type "UNKNOWN")
 endif()
 
+
+if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
+	set(ASSETS_PATH "./Assets")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./Assets/")
+	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD)
+    
+    if(device_system STREQUAL WINDOWS) # Disable windows console
+        set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+    endif()
+else()
+    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
+	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Assets/")
+endif()
+
+
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_SYSTEM="${device_system}")
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_TYPE="${device_type}")
 
 message(NOTICE "+== ${CMAKE_PROJECT_NAME}")
-message(NOTICE "|==> USE_OPENGL = ${using_opengl}")
+message(NOTICE "|==> USE_OPENGL = ${USE_OPENGL}")
 message(NOTICE "|==> CURRENT_DEVICE_SYSTEM = ${device_system}")
 message(NOTICE "|==> CURRENT_DEVICE_TYPE = ${device_type}")
 message(NOTICE "|==> PRODUCTION_BUILD = ${PRODUCTION_BUILD}")
