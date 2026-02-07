@@ -78,7 +78,7 @@ target_include_directories(stb INTERFACE libs/stb)
 
 # Reconfigure your project after changing these options
 option(PRODUCTION_BUILD "Make this a production build" False)
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer" True)
+option(USE_OPENGL "Use OpenGL instead of SDL Renderer" False)
 
 
 # Get all .c, .h .cpp and .hpp files
@@ -132,16 +132,16 @@ endif()
 
 
 if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
-	set(ASSETS_PATH "./Assets")
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./Assets/")
+	set(ASSETS_PATH "./assets")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD)
     
     if(device_system STREQUAL WINDOWS) # Disable windows console
         set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
     endif()
 else()
-    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Assets/")
+    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 endif()
 
 
