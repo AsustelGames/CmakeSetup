@@ -11,3 +11,7 @@ cd build && ninja && cd ..
 
 # run
 cd .. && cd build && ./CmakeSetup
+
+
+# print lines of code
+cloc --by-file-by-lang src
