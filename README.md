@@ -95,13 +95,13 @@ Now run your project
 ### How to use OpenGL
 If you want to use **OpenGL** instead of **SDL_Renderer** you will need to set `USE_OPENGL` option to **True** in CmakeLists.txt on **line 81**  and reconfigure your project
 ```cpp
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer"  True) # False ->
+option(USE_OPENGL "Use OpenGL instead of SDL Renderer"  True) # False -> True
 ```
 > Note that the example code will only render when using the **SDL_Renderer**
 ### Before shipping your project
 Before shipping your project set `PRODUCTION_BUILD` option to **True** in CmakeLists.txt on **line 80**  and reconfigure your project
 ```cpp
-option(PRODUCTION_BUILD "Make this a production build" True) # Set it to True
+option(PRODUCTION_BUILD "Make this a production build" True) # False -> True
 ```
 ### How to use ASSETS_PATH
 Let's say you want to load an image using **stb_image** instead of specifing a long path you would load it like that
