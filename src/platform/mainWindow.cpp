@@ -10,7 +10,7 @@ int main()
         
         SDL_Window* Window = SDL_CreateWindow("CmakeSetup - Window", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
         SDL_GLContext GL = SDL_GL_CreateContext(Window);
-        SDL_GL_SetSwapInterval(1);
+        SDL_GL_SetSwapInterval(1); // Enable VSync
         SDL_Renderer* Renderer = nullptr;
         std::cout << "Using OpenGL" << '\n';
         
@@ -24,8 +24,9 @@ int main()
         enableReportGlErrors();
     #else
         SDL_Window* Window = SDL_CreateWindow("CmakeSetup - Window", 640, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+        SDL_Renderer* Renderer = SDL_CreateRenderer(Window, nullptr);
+        SDL_SetRenderVSync(Renderer, 1); // Enable VSync
         SDL_GLContext GL = nullptr;
-        SDL_Renderer* Renderer = SDL_CreateRenderer(Window, NULL);
         std::cout << "Using SDL_Renderer" << '\n';
     #endif
     
@@ -82,11 +83,11 @@ int main()
             glViewport(0, 0, WindowLogicalSize.x, WindowLogicalSize.y);
             
             // Fill window with color
-            Tool_glClearColor(MainGame.BackgroundColor);
+            Tool::glClearColor(MainGame.BackgroundColor);
             glClear(GL_COLOR_BUFFER_BIT);
         #else
             // Fill window with color
-            Tool_SetRenderDrawColor(Renderer, MainGame.BackgroundColor);
+            Tool::SDL_SetRenderDrawColor(Renderer, MainGame.BackgroundColor);
             SDL_RenderClear(Renderer);
         #endif
         

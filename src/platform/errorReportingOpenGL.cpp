@@ -1,3 +1,4 @@
+// This file is copied from https://github.com/meemknight/ourCraft/blob/master/src/platform/errorReporting.cpp
 #include "errorReportingOpenGL.hpp"
 #include <iostream>
 

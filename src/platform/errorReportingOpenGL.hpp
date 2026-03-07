@@ -1,3 +1,4 @@
+// This file is copied from https://github.com/meemknight/ourCraft/blob/master/include/gameLayer/errorReporting.h
 #pragma once
 #include <glad/glad.h>
 

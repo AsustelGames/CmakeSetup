@@ -13,8 +13,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdint>
-#include <fstream>
 #include <algorithm>
 
 #include "tools/colors.hpp"
@@ -41,7 +39,7 @@ private:
    /// Example code you can safely delete
 public:
    std::string Title = "Game";
-   Color BackgroundColor = GRAY;
+   Tool::Color BackgroundColor = GRAY;
    
    
    Game(SDL_Window* Window_, SDL_Renderer* R_, SDL_GLContext GL_, SDL_Event& Event_, double& DT_, bool *Close_);

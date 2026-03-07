@@ -1,7 +1,7 @@
 build commands for me to access quickly
 
 
-nix-shell -p gnumake cmake ninja pkg-config sdl3 enet
+nix-shell -p gnumake cmake ninja pkg-config sdl3
 
 # configure
 cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release or Debug 

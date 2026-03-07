@@ -6,12 +6,11 @@
 #include "backends/imgui_impl_sdl3.h"
 
 #ifdef USE_OPENGL
+   #include "glad/glad.h"
    #include "backends/imgui_impl_opengl3.h"
 #else
    #include "imgui_impl_sdlrenderer3.h"
 #endif
-
-#include "glad/glad.h"
 #include "glm/glm.hpp"
 
 #include <iostream>

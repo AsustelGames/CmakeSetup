@@ -40,9 +40,9 @@ CmakeSetup
 │   └── Here are all of your assets (no assets folder in github)
 ```
 ## How To Build
-> Note that this Project has only been tested on **NixOS** using **Cmake** and **Ninja** and on **Windows** using **Visual Studio 2022** and **Cmake** and also using **MinGW** with **Msys2**
+> Note that this project has only been tested on **NixOS** using **Cmake** and **Ninja** and on **Windows** using **Visual Studio 2022** and **Cmake** and also using **MinGW** with **Msys2**
 
-Make sure you have everything required installed
+Make sure you have **Cmake** and **Ninja** installed on your system or **Make** if you're building with **Make**
 > If you are using **NixOS** run `nix-shell -p gnumake cmake ninja pkg-config sdl3` before building
 ### Using Ninja
 #### cd into your project
@@ -95,7 +95,7 @@ Now run your project
 ### How to use OpenGL
 If you want to use **OpenGL** instead of **SDL_Renderer** you will need to set `USE_OPENGL` option to **True** in CmakeLists.txt on **line 81**  and reconfigure your project
 ```cpp
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer"  True) # Set it to True
+option(USE_OPENGL "Use OpenGL instead of SDL Renderer"  True) # False ->
 ```
 > Note that the example code will only render when using the **SDL_Renderer**
 ### Before shipping your project
@@ -113,3 +113,5 @@ unsigned char *pixels = stbi_load(ASSETS_PATH"sword.png", etc...);
 - Don't show console when `PRODUCTION_BUILD` option is set to **True** on **Windows**
 - Add an example for **OpenGL**
 - Add font and image loaders using **stb_truetype** and **stb_image** for **OpenGL** and **SDL_Renderer**
+- Define DEBUG_BUILD 1 if the project is build using -DCMAKE_BUILD_TYPE=Debug
+- Check if this Project works and builds for the web
