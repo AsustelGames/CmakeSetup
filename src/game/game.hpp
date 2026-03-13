@@ -38,7 +38,7 @@ private:
    SDL_Texture* Texture = SDL_CreateTexture(R, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, 100, 100);
    /// Example code you can safely delete
 public:
-   std::string Title = "Game";
+   std::string Title = "Game"; // Leave blank if you want the original window title
    Tool::Color BackgroundColor = GRAY;
    
    

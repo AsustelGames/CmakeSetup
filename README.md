@@ -3,7 +3,7 @@
 ## Overview
 - Libraries
 - Features
--  Project Structure
+- Project Structure
 - How To Build
 - Additional Info
 - Planned Features
@@ -54,6 +54,7 @@ This will create the build directory
 ```
 cmake -G Ninja -S . -B build
 ```
+> You can also set your project build type using `-DCMAKE_BUILD_TYPE=Release` or `-DCMAKE_BUILD_TYPE=Debug` for debugging
 #### Build your project
 This will cd into your build directory then it will run the build command in this case it's **Ninja** and create the executable, after that it will cd back to your project directory
 > It can also be used to rebuild your project if you made any changes
@@ -77,6 +78,7 @@ This will create the build directory
 ```
 cmake -S . -B build
 ```
+> You can also set your project build type using `-DCMAKE_BUILD_TYPE=Release` or `-DCMAKE_BUILD_TYPE=Debug` for debugging
 #### Build your project
 This will cd into your build directory then it will run the build command in this case it's **Make** and create the executable, after that it will cd back to your project directory
 > It can also be used to rebuild your project if you made any changes
@@ -106,12 +108,12 @@ option(PRODUCTION_BUILD "Make this a production build" True) # False -> True
 ### How to use ASSETS_PATH
 Let's say you want to load an image using **stb_image** instead of specifing a long path you would load it like that
 ```cpp
-// The image is in project/assets/sword.png
+// The image path is project/assets/sword.png
 unsigned char *pixels = stbi_load(ASSETS_PATH"sword.png", etc...);
 ```
+
 ## Planned Features
 - Don't show console when `PRODUCTION_BUILD` option is set to **True** on **Windows**
 - Add an example for **OpenGL**
 - Add font and image loaders using **stb_truetype** and **stb_image** for **OpenGL** and **SDL_Renderer**
-- Define DEBUG_BUILD 1 if the project is build using -DCMAKE_BUILD_TYPE=Debug
 - Check if this Project works and builds for the web

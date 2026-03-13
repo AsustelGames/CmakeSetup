@@ -14,8 +14,14 @@
 #include "glm/glm.hpp"
 
 #include <iostream>
+#include <string>
 
 #include "errorReportingOpenGL.hpp"
 
 #include "../game/game.hpp"
 #include "../game/tools/colors.hpp"
+
+
+static bool InitWindow(const std::string& Title, SDL_Window*& Window, bool OpenGL);
+static bool InitSDLRenderer(SDL_Window* Window, SDL_Renderer*& Renderer);
+static bool InitOpenGL(SDL_Window* Window, SDL_GLContext& GL);

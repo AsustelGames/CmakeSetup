@@ -33,6 +33,7 @@ void Game::RenderGui()
 {
    /// Example code you can safely delete
    ImGui::Begin("Test", nullptr);
+   ImGui::Text("FPS: %.1f", 1.0 / DT);
    if (ImGui::Button("Click me", { 100, 100 }))
    {
       std::cout << "you've clicked on me!" << '\n';

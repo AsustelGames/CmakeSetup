@@ -77,8 +77,8 @@ target_include_directories(stb INTERFACE libs/stb)
 
 
 # Reconfigure your project after changing these options
-option(PRODUCTION_BUILD "Make this a production build" False)
-option(USE_OPENGL "Use OpenGL instead of SDL Renderer" False)
+option(production_build "Make this a production build" False)
+option(use_opengl "Use OpenGL instead of SDL Renderer" False)
 
 
 # Get all .c, .h .cpp and .hpp files
@@ -89,7 +89,7 @@ set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio glm glad)
 
-if(USE_OPENGL)
+if(use_opengl)
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USE_OPENGL)
 endif()
 
@@ -131,17 +131,22 @@ else()
 endif()
 
 
-if(PRODUCTION_BUILD) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on PRODUCTION_BUILD option
-	set(ASSETS_PATH "./assets")
+if(production_build) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on production_build option
+	set(assets_path "./assets")
     target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD)
-    
-    if(device_system STREQUAL WINDOWS) # Disable windows console
-        set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-    endif()
 else()
-    set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+    set(assets_path "${CMAKE_CURRENT_SOURCE_DIR}/assets")
 	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+endif()
+
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(debug_build "True")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEBUG_BUILD)
+    # Todo hide windows console here
+else()
+    set(debug_build "False")
 endif()
 
 
@@ -149,8 +154,9 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_SYSTEM="$
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_TYPE="${device_type}")
 
 message(NOTICE "+== ${CMAKE_PROJECT_NAME}")
-message(NOTICE "|==> USE_OPENGL = ${USE_OPENGL}")
+message(NOTICE "|==> USE_OPENGL = ${use_opengl}")
 message(NOTICE "|==> CURRENT_DEVICE_SYSTEM = ${device_system}")
 message(NOTICE "|==> CURRENT_DEVICE_TYPE = ${device_type}")
-message(NOTICE "|==> PRODUCTION_BUILD = ${PRODUCTION_BUILD}")
-message(NOTICE "+== ")
+message(NOTICE "|==> PRODUCTION_BUILD = ${production_build}")
+message(NOTICE "|==> DEBUG_BUILD = ${debug_build}")
+message(NOTICE "+==")
