@@ -43,7 +43,7 @@ CmakeSetup
 > Note that this project has only been tested on **NixOS** using **Cmake** and **Ninja** and on **Windows** using **Visual Studio 2022** and **Cmake** and also using **MinGW** with **Msys2**
 
 Make sure you have **Cmake** and **Ninja** installed on your system or **Make** if you're building with **Make**
-> If you are using **NixOS** run `nix-shell -p gnumake cmake ninja pkg-config sdl3` before building
+> If you are using **NixOS** run `nix-shell path/to/CmakeSetup/shell.nix` before building
 ### Using Ninja
 #### cd into your project
 ```

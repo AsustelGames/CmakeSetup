@@ -1,10 +1,10 @@
-build commands for me to access quickly
+build commands
 
 
-nix-shell -p gnumake cmake ninja pkg-config sdl3
+nix-shell path/to/CmakeSetup/shell.nix
 
 # configure
-cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release or Debug
+cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release or Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 # build/rebuild
 cd build && ninja && cd ..
