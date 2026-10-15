@@ -1,10 +1,14 @@
 build commands
 
 
-nix-shell path/to/CmakeSetup/shell.nix
+cd path/to/CmakeSetup
 
-# configure
-cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release or Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+# If using NixOS
+nix-shell shell.nix
+
+# Configure
+# You can also replace DEBUG with RELEASE for a release build
+cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 # build/rebuild
 cd build && ninja && cd ..

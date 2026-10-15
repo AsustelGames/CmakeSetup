@@ -1,3 +1,6 @@
+>Please use the v2-minimal branch of this setup.
+>This old branch is no longer supported.
+
 # CmakeSetup
 ![](https://github.com/AsustelGames/CmakeSetup/blob/main/screenshot.png)
 ## Overview
