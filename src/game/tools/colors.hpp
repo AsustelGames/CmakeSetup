@@ -1,8 +1,10 @@
 #pragma once
 
 
-#ifdef USE_OPENGL
+#if CURRENT_GRAPHICS_RENDERER == USING_OPENGL_RENDERING
    #include "glad/glad.h"
+#elif CURRENT_GRAPHICS_RENDERER == USING_VULKAN_RENDERING
+   // todo
 #endif
 #include "SDL3/SDL.h"
 
@@ -39,11 +41,13 @@ namespace Tool
       SDL_SetRenderDrawColor(Renderer_, Color.r, Color.g, Color.b, Color.a);
    }
 
-   #ifdef USE_OPENGL
+   #if CURRENT_GRAPHICS_RENDERER == USING_OPENGL_RENDERING
       inline void glClearColor(Tool::Color Color) // Wrapper function for glClearColor() that accepts the Color datatype
       {
          ::glClearColor(Color.r / 255.0f, Color.g / 255.0f, Color.b / 255.0f, Color.a / 255.0f); // Using global namespace to call the glClearColor() instead of self (Tool::glClearColor())
       }
+   #elif CURRENT_GRAPHICS_RENDERER == USING_VULKAN_RENDERING
+      // todo
    #endif
 
 

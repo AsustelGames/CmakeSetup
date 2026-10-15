@@ -1,3 +1,4 @@
+# 
 cmake_minimum_required (VERSION 3.16)
 project (CmakeSetup)
 
@@ -15,20 +16,24 @@ set(BUILD_SHARED_LIBS OFF)
 include_directories(libs/sdl3/include)
 find_package(SDL3)
 if(NOT SDL3_FOUND)
-    add_subdirectory(libs/sdl3)
+   add_subdirectory(libs/sdl3)
 endif()
+
 
 # Glad GL 4.6 Core
 set(glad_sources libs/glad/src/glad.c)
-add_library(glad ${glad_sources})
+add_library(glad STATIC ${glad_sources})
 target_include_directories(glad PUBLIC libs/glad/include)
+
 
 # GLM
 add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE libs/glm)
 
+
 # Enet
 include_directories(libs/enet/include)
+
 
 # Imgui
 set(imgui_sources
@@ -40,16 +45,20 @@ set(imgui_sources
    libs/imgui/backends/imgui_impl_sdl3.cpp
    libs/imgui/backends/imgui_impl_opengl3.cpp
    libs/imgui/backends/imgui_impl_sdlrenderer3.cpp
-)
-add_library(imgui ${imgui_sources})
+   #libs/imgui/backends/imgui_impl_vulkan.cpp
+   )
+   add_library(imgui STATIC ${imgui_sources})
 target_include_directories(imgui PUBLIC libs/imgui libs/imgui/backends)
+
 
 # MiniAudio
 add_library(miniaudio INTERFACE)
 target_include_directories(miniaudio INTERFACE libs/miniaudio)
 
+
 # FastNoiseLite
 include_directories(libs/fnl)
+
 
 # Assimp
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "")
@@ -67,9 +76,9 @@ set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
 
-
 include_directories(libs/assimp/include)
 add_subdirectory(libs/assimp)
+
 
 # stb image, image_write, image_resize2 and stb_truetype
 add_library(stb INTERFACE)
@@ -78,85 +87,146 @@ target_include_directories(stb INTERFACE libs/stb)
 
 # Reconfigure your project after changing these options
 option(production_build "Make this a production build" False)
-option(use_opengl "Use OpenGL instead of SDL Renderer" False)
+
+
+# Only 1 graphics renderer can be active at a time.
+# If you leave this option empty or select an invalid graphics renderer it will default to the SDL_Renderer
+set(graphics_renderer "OpenGL" CACHE STRING "Available options: Sdl, OpenGL or Vulkan")
+set_property(CACHE graphics_renderer PROPERTY STRINGS Sdl OpenGL Vulkan)
+
 
 
 # Get all .c, .h .cpp and .hpp files
 set(src_path "${CMAKE_CURRENT_SOURCE_DIR}/src")
 file(GLOB_RECURSE my_sources CONFIGURE_DEPENDS ${src_path}/*.cpp ${src_path}/*.hpp ${src_path}/*.c ${src_path}/*.h)
+
 add_executable (${CMAKE_PROJECT_NAME} ${my_sources})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio glm glad)
-
-if(use_opengl)
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USE_OPENGL)
-endif()
+# Add macro if this is a debug build
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC $<$<CONFIG:Debug>:DEBUG_BUILD>)
+set(debug_build $<CONFIG:Debug>)
 
 if(MSVC) 
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    add_compile_options(/arch:AVX2) # make sure SIMD optimizations take place
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
+   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:>")
+   target_compile_options(${PROJECT_NAME} PRIVATE /arch:AVX2) # make sure SIMD optimizations take place
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
 endif()
 
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 stb imgui miniaudio glm glad)
+
+
+# Renderer macros
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USING_SDL_RENDERING=1)
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USING_OPENGL_RENDERING=2)
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC USING_VULKAN_RENDERING=3)
+
+if(graphics_renderer STREQUAL "Sdl")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_GRAPHICS_RENDERER=1)
+elseif(graphics_renderer STREQUAL "OpenGL")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_GRAPHICS_RENDERER=2)
+elseif(graphics_renderer STREQUAL "Vulkan")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_GRAPHICS_RENDERER=3)
+else()
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_GRAPHICS_RENDERER=1)
+   message(WARNING "==> Option current_graphics_renderer is empty or invalid")
+   message(WARNING "==> Using SDL_Renderer instead")
+   set(graphics_renderer "Sdl")
+endif()
+
+
+# Device system variables
+set(device_system_web 1)
+set(device_system_android 2)
+set(device_system_ios 3)
+set(device_system_windows 4)
+set(device_system_macos 5)
+set(device_system_linux 6)
+set(device_system_unknown 7)
+
+# Device system macros
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_WEB=${device_system_web})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_ANDROID=${device_system_android})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_IOS=${device_system_ios})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_WINDOWS=${device_system_windows})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_MACOS=${device_system_macos})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_LINUX=${device_system_linux})
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM_UNKNOWN=${device_system_unknown})
 
 if(EMSCRIPTEN)
-    set(device_system "WEB")
-    set(device_type "BROWSER")
-    
+   set(device_system "WEB")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_web})
+   
 elseif(ANDROID)
-    set(device_system "ANDROID")
-    set(device_type "MOBILE")
-    
+   set(device_system "ANDROID")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_android})
+   
 elseif(IOS)
-    set(device_system "IOS")
-    set(device_type "MOBILE")
-    
+   set(device_system "IOS")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_ios})
+   
 elseif(WIN32)
-    set(device_system "WINDOWS")
-    set(device_type "COMPUTER")
-    
+   set(device_system "WINDOWS")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_windows})
+   
 elseif(APPLE)
-    set(device_system "MACOS")
-    set(device_type "COMPUTER")
-    
+   set(device_system "MACOS")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_macos})
+   
 elseif(UNIX)
-    set(device_system "LINUX")
-    set(device_type "COMPUTER")
-    
+   set(device_system "LINUX")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_linux})
+   
 else()
-    set(device_system "UNKNOWN")
-    set(device_type "UNKNOWN")
+   set(device_system "UNKNOWN")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC CURRENT_DEVICE_SYSTEM=${device_system_unknown})
+endif()
+
+# Current device system string macro
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_SYSTEM_STRING="${device_system}")
+
+
+# Change and define ASSETS_PATH and PRODUCTION_BUILD depending on production_build option
+if(production_build)
+   set(assets_path "./assets")
+   target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
+   target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD)
+else()
+   set(assets_path "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+   target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 endif()
 
 
-if(production_build) # Change and define ASSETS_PATH and PRODUCTION_BUILD depending on production_build option
-	set(assets_path "./assets")
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD)
-else()
-    set(assets_path "${CMAKE_CURRENT_SOURCE_DIR}/assets")
-	target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-endif()
 
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(debug_build "True")
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC DEBUG_BUILD)
-    # Todo hide windows console here
-else()
-    set(debug_build "False")
-endif()
 
-
-target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_SYSTEM="${device_system}")
-target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC CURRENT_DEVICE_TYPE="${device_type}")
-
+# Print information
 message(NOTICE "+== ${CMAKE_PROJECT_NAME}")
-message(NOTICE "|==> USE_OPENGL = ${use_opengl}")
+message(NOTICE "|==> CURRENT_GRAPHICS_RENDERER = ${graphics_renderer}")
 message(NOTICE "|==> CURRENT_DEVICE_SYSTEM = ${device_system}")
-message(NOTICE "|==> CURRENT_DEVICE_TYPE = ${device_type}")
 message(NOTICE "|==> PRODUCTION_BUILD = ${production_build}")
 message(NOTICE "|==> DEBUG_BUILD = ${debug_build}")
 message(NOTICE "+==")
+
+
+
+# Preprocessor definitions in cpp
+
+
+# Graphics
+#
+# USING_SDL_RENDERING=3 -> [INT] Always 1
+# USING_OPENGL_RENDERING=1 -> [INT] Always 2
+# USING_VULKAN_RENDERING=2 -> [INT] Always 3
+#
+# CURRENT_GRAPHICS_RENDERER -> [INT] Can be either 1, 2 or 3 depending on what you're using
+
+
+# Devices & Oses
+#
+# CURRENT_DEVICE_SYSTEM -> [STRING] Can be either WEB, ANDROID, IOS, WINDOWS, MACOS, LINUX or UNKNOWN
+#
+#
+#
+#
+

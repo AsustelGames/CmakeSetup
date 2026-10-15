@@ -19,35 +19,32 @@
 #include "tools/x_in_percent.hpp"
 
 
-class Game
+namespace Game
 {
-private:
-   SDL_Window* Window;
-   SDL_Renderer* R;
-   SDL_GLContext GL;
-   SDL_Event Event;
-   glm::ivec2 WindowLogicalSize; // Actual window size, used for mostly everything
-   glm::ivec2 WindowPixelSize; // HIDPI window size (scaled up), used for pixel perfect rendering and some opengl stuff
-   bool *Close; // Close the window
-   double& DT; // DeltaTime, 1.0 / DT = FPS
+   struct GraphicsRenderer
+   {
+      SDL_Renderer* SDL = nullptr;
+      SDL_GLContext GL = nullptr;
+   };
+
+   inline GraphicsRenderer Renderer;
+
+   inline std::string Title = "Game"; // Leave blank if you want the original window title
+   inline Tool::Color BackgroundColor = GRAY;
+   inline bool* CloseWindow = nullptr; // Close the window
+   inline double* DT = nullptr; // DeltaTime, 1.0 / DT = FPS
+   inline glm::ivec2 CurrentWindowLogicalSize = {0, 0}; // Actual window size, used for mostly everything
+   inline glm::ivec2 CurrentWindowPixelSize = {0, 0}; // HIDPI window size (scaled up), used for pixel perfect rendering and some opengl stuff
+
+   inline SDL_Window* Window = nullptr;
+   inline SDL_Event* Event;
    
-   
-   /// Example code you can safely delete
-   double I = 0;
-   uint32_t Pixels[100*100];
-   SDL_Texture* Texture = SDL_CreateTexture(R, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, 100, 100);
-   /// Example code you can safely delete
-public:
-   std::string Title = "Game"; // Leave blank if you want the original window title
-   Tool::Color BackgroundColor = GRAY;
-   
-   
-   Game(SDL_Window* Window_, SDL_Renderer* R_, SDL_GLContext GL_, SDL_Event& Event_, double& DT_, bool *Close_);
-   ~Game();
-   
+
+   void Init(int argc, char* argv[]);
    void Update();
    void Render();
    void RenderGui();
    void ShouldClose();
-   void AfterClose();
+   void AfterClosed();
+   void AfterDestroyed();
 };

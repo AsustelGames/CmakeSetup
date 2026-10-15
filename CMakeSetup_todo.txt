@@ -1,0 +1,23 @@
+CMakeSetup_1.0.0_11.06.2026
+
+name: library version, commit, download date
+assimp: 
+enet: 
+fnl (fastNoiseLite): 
+glad: 
+glm: 
+imgui: 
+miniaudio: 
+sdl: 
+stb: 
+
+
+#TODO
+
+Add vulkan support
+Don't show console when PRODUCTION_BUILD option is set to True on Windows
+Add font and image loaders using stb_truetype and stb_image for OpenGL and SDL_Renderer
+Check if this Project compiles and works for the web
+
+#FIX
+
