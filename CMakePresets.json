@@ -1,0 +1,66 @@
+{
+   "version": 6,
+   "configurePresets": [
+      {
+         "name": "debug",
+         "displayName": "Debug",
+         "generator": "Ninja",
+         "binaryDir": "build/debug",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Debug",
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+         }
+      },
+      {
+         "name": "release",
+         "displayName": "Release",
+         "generator": "Ninja",
+         "binaryDir": "build/release",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Release",
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+         }
+      },
+      {
+         "name": "debug-production",
+         "displayName": "Debug-Production",
+         "generator": "Ninja",
+         "binaryDir": "build/debug-production",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Debug",
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+            "production_build": true
+         }
+      },
+      {
+         "name": "release-production",
+         "displayName": "Release-Production",
+         "generator": "Ninja",
+         "binaryDir": "build/release-production",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Release",
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+            "production_build": true
+         }
+      }
+   ],
+
+   "buildPresets": [
+      {
+         "name": "debug",
+         "configurePreset": "debug"
+      },
+      {
+         "name": "release",
+         "configurePreset": "release"
+      },
+      {
+         "name": "debug-production",
+         "configurePreset": "debug-production"
+      },
+      {
+         "name": "release-production",
+         "configurePreset": "release-production"
+      }
+   ]
+}

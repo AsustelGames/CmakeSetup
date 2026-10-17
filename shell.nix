@@ -4,14 +4,10 @@ pkgs.mkShell {
   packages = with pkgs; [
     cmake
     ninja
-    meson
-    gnumake
-    gcc
-    pkg-config
-    sdl3
+    glfw3
   ];
 
   shellHook = ''
-    echo "Ready to develop"
+    echo "Ready to compile"
   '';
 }
