@@ -31,6 +31,8 @@ add_subdirectory(libs/imgui)
 # MiniAudio
 add_subdirectory(libs/miniaudio)
 
+# stb-image, image_write, image_resize2 and truetype (Custom CMakeLists.txt)
+add_subdirectory(libs/stb)
 
 # Assimp
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "")
@@ -48,12 +50,7 @@ set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
 
-# include_directories(libs/assimp/include)
 add_subdirectory(libs/assimp)
-
-
-# stb-image, image_write, image_resize2 and truetype (Custom CMakeLists.txt)
-add_subdirectory(libs/stb)
 
 
 # Reconfigure your project after changing these options
@@ -67,6 +64,7 @@ file(GLOB_RECURSE my_sources CONFIGURE_DEPENDS ${src_path}/*.cpp ${src_path}/*.h
 
 add_executable (${CMAKE_PROJECT_NAME} ${my_sources})
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+
 
 # Add macro if this is a debug build
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR NOT CMAKE_BUILD_TYPE)
