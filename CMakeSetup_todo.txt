@@ -1,9 +1,13 @@
-
-
+### GLFW window, updated glad and todo list (18.10.2026)
+- Made glfw display a window
+- updated glad
+- updated the todo list
+###
 
 ### Removed glfw as a submodule and made it a normal folder (18.10.2026)
 - no description
 ###
+
 
 ### shell.nix and library changes (17.10.2026)
 - removed the useless '\' file
