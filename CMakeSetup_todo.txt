@@ -1,23 +1,22 @@
-CMakeSetup_1.0.0_11.06.2026
-
-name: library version, commit, download date
-assimp: 
-enet: 
-fnl (fastNoiseLite): 
-glad: 
-glm: 
-imgui: 
-miniaudio: 
-sdl: 
-stb: 
 
 
-#TODO
 
-Add vulkan support
-Don't show console when PRODUCTION_BUILD option is set to True on Windows
-Add font and image loaders using stb_truetype and stb_image for OpenGL and SDL_Renderer
-Check if this Project compiles and works for the web
+### Removed glfw as a submodule and made it a normal folder (18.10.2026)
+- no description
+###
 
-#FIX
+### shell.nix and library changes (17.10.2026)
+- removed the useless '\' file
+- removed sdl and enet from the libs dir
+- added CMakeLists.txt for glad, stb and imgui
+- added build.sh script for easier compilation
+- build_commands.txt was replaced with CMakePresets.json
+- added glfw
+- cleaned up in shell.nix
 
+  (info)
+  I accidentally deleted this commit so I had to
+  squash merge recovery into v2-minimal, that's why
+  there is no commit with this name but there there
+  still changes.
+###

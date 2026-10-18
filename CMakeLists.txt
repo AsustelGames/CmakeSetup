@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(BUILD_SHARED_LIBS OFF)
 
+# OpenGL
+find_package(OpenGL REQUIRED)
 
 # GLFW
 include_directories(libs/glfw/include)
@@ -78,7 +80,7 @@ if(MSVC)
    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
 endif()
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE assimp glad glfw stb imgui miniaudio glm)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE assimp glad glfw OpenGL::GL stb imgui miniaudio glm)
 
 
 # Make the ASSETS_PATH definition point to the correct folder
