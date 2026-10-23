@@ -1,3 +1,10 @@
+### Updated Imgui (23.10.2026)
+- Updated Imgui to the newest version
+- Fixed Imgui CMakeLists.txt to make it possible to use imgui
+- Updated .gitignore to ignore the imgui.ini file
+- Updated main.cpp and main.hpp to show an Imgui window
+###
+
 ### GLFW window, updated glad and todo list (18.10.2026)
 - Made glfw display a window
 - updated glad
